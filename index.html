@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chaos Slider Deepfake Demo</title>
+  <style>
+    body {
+      background-color: #000;
+      color: #0f0;
+      font-family: monospace;
+      padding: 2rem;
+      text-align: center;
+    }
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+    .slider-labels {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-bottom: 1rem;
+    }
+    .slider-labels label {
+      cursor: pointer;
+    }
+    video {
+      max-width: 100%;
+      border-radius: 1rem;
+      border: 2px solid #0f0;
+    }
+    p {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+    .controls {
+      margin-top: 1rem;
+    }
+    button {
+      background-color: #0f0;
+      color: #000;
+      border: none;
+      padding: 0.5rem 1rem;
+      font-family: monospace;
+      cursor: pointer;
+      border-radius: 0.5rem;
+      margin: 0 0.5rem;
+    }
+    .loading {
+      display: none;
+      margin-top: 1rem;
+      color: #0f0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Chaos Level: Deepfake Simulation</h1>
+
+  <div class="slider-labels">
+    <label><input type="radio" name="chaos" value="low" checked> Low</label>
+    <label><input type="radio" name="chaos" value="med"> Moderate</label>
+    <label><input type="radio" name="chaos" value="high"> Extreme</label>
+  </div>
+
+  <video id="chaos-video" autoplay muted loop playsinline>
+    <source src="/assets/demo/chaos_low.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+
+  <div class="controls">
+    <button id="togglePlay">Pause</button>
+  </div>
+
+  <div class="loading" id="loading">Loading new video...</div>
+
+  <p>All simulations shown with consent. This is a demonstration of AI-generated social engineering scenarios. Not real.</p>
+
+  <script>
+    const video = document.getElementById('chaos-video');
+    const loading = document.getElementById('loading');
+    const playBtn = document.getElementById('togglePlay');
+
+    const sources = {
+      low: '/assets/demo/chaos_low.mp4',
+      med: '/assets/demo/chaos_med.mp4',
+      high: '/assets/demo/chaos_high.mp4'
+    };
+
+    document.querySelectorAll('input[name="chaos"]').forEach(radio => {
+      radio.addEventListener('change', () => {
+        loading.style.display = 'block';
+        video.pause();
+        video.querySelector('source').src = sources[radio.value];
+        video.load();
+        video.oncanplay = () => {
+          loading.style.display = 'none';
+          video.play();
+          playBtn.textContent = 'Pause';
+        };
+      });
+    });
+
+    playBtn.addEventListener('click', () => {
+      if (video.paused) {
+        video.play();
+        playBtn.textContent = 'Pause';
+      } else {
+        video.pause();
+        playBtn.textContent = 'Play';
+      }
+    });
+  </script>
+</body>
+</html>
