@@ -1,3 +1,4 @@
+<!-- module2.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,17 +15,32 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 100vh;
+      padding: 2rem;
+      text-align: left;
     }
-    img {
-      width: 90%;
-      max-width: 800px;
-      border: 3px solid #00ff99;
+    .email-box {
+      background: #1a1a1a;
+      border: 2px solid #00ff99;
       border-radius: 8px;
+      padding: 1.5rem;
+      max-width: 800px;
+      width: 100%;
       box-shadow: 0 0 15px #00ff99;
     }
+    .email-header {
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+    .email-body {
+      margin-bottom: 1rem;
+    }
+    .suspicious {
+      color: #ff5555;
+      font-weight: bold;
+    }
     .next {
-      margin-top: 1.5rem;
+      margin-top: 2rem;
       padding: 1rem 2rem;
       background: #00ff99;
       color: #000;
@@ -37,7 +53,20 @@
 </head>
 <body>
   <h2>Module 2: Email Phishing Example</h2>
-  <img src="phishing-email.png" alt="Phishing Email Screenshot">
+  <div class="email-box">
+    <div class="email-header">
+      <p><strong>From:</strong> <span class="suspicious">IT Support &lt;it-support@secure-mail247.com&gt;</span></p>
+      <p><strong>To:</strong> You</p>
+      <p><strong>Subject:</strong> Urgent: Account Suspension Notice</p>
+    </div>
+    <div class="email-body">
+      <p>Dear User,</p>
+      <p>We have detected unusual activity in your account. For your safety, your email access will be <span class="suspicious">suspended in 12 hours</span> unless you verify your credentials.</p>
+      <p>Please <a href="#" class="suspicious">click here</a> to verify immediately.</p>
+      <p>Thank you,<br>IT Security Team</p>
+    </div>
+    <p><em>Perceptus flagged this message due to a suspicious sender address, urgency tactics, and a suspicious link.</em></p>
+  </div>
   <button class="next" onclick="window.location.href='module3.html'">Next</button>
 </body>
 </html>
