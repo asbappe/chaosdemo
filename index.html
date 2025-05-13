@@ -1,116 +1,90 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chaos Slider Deepfake Demo</title>
+  <title>Perceptus Demo</title>
   <style>
     body {
-      background-color: #000;
-      color: #0f0;
-      font-family: monospace;
-      padding: 2rem;
-      text-align: center;
-    }
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-    }
-    .slider-labels {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0b0f19;
+      color: #e0e0e0;
       display: flex;
       justify-content: center;
-      gap: 2rem;
-      margin-bottom: 1rem;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+      text-align: center;
     }
-    .slider-labels label {
-      cursor: pointer;
-    }
-    video {
-      max-width: 100%;
-      border-radius: 1rem;
-      border: 2px solid #0f0;
-    }
-    p {
-      margin-top: 1rem;
-      font-size: 0.9rem;
-      opacity: 0.8;
-    }
-    .controls {
-      margin-top: 1rem;
-    }
-    button {
-      background-color: #0f0;
+    .button {
+      margin-top: 2rem;
+      padding: 1rem 2rem;
+      background: #00ff99;
       color: #000;
       border: none;
-      padding: 0.5rem 1rem;
-      font-family: monospace;
+      border-radius: 8px;
+      font-size: 1.2rem;
       cursor: pointer;
-      border-radius: 0.5rem;
-      margin: 0 0.5rem;
     }
-    .loading {
-      display: none;
-      margin-top: 1rem;
-      color: #0f0;
+    .button:hover {
+      background: #00cc7a;
     }
   </style>
 </head>
 <body>
-  <h1>Chaos Level: Deepfake Simulation</h1>
+  <h1>Welcome to Perceptus</h1>
+  <p>Experience the future of AI-powered threat simulation & training.</p>
+  <button class="button" onclick="window.location.href='module1.html'">Start the Tour</button>
+</body>
+</html>
 
-  <div class="slider-labels">
-    <label><input type="radio" name="chaos" value="low" checked> Low</label>
-    <label><input type="radio" name="chaos" value="med"> Moderate</label>
-    <label><input type="radio" name="chaos" value="high"> Extreme</label>
-  </div>
 
-  <video id="chaos-video" autoplay muted loop playsinline>
-    <source src="/assets/demo/chaos_low.mp4" type="video/mp4">
+<!-- module1.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 1 - Deepfake Attack</title>
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+      color: #fff;
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    video {
+      width: 90%;
+      max-width: 800px;
+      border: 4px solid #00ff99;
+      border-radius: 12px;
+      box-shadow: 0 0 20px #00ff99;
+    }
+    .next {
+      margin-top: 1.5rem;
+      padding: 1rem 2rem;
+      background: #00ff99;
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h2>Module 1: Deepfake Attack Simulation</h2>
+  <video controls autoplay loop>
+    <source src="deepfake-demo.mp4" type="video/mp4">
     Your browser does not support the video tag.
   </video>
-
-  <div class="controls">
-    <button id="togglePlay">Pause</button>
-  </div>
-
-  <div class="loading" id="loading">Loading new video...</div>
-
-  <p>All simulations shown with consent. This is a demonstration of AI-generated social engineering scenarios. Not real.</p>
-
-  <script>
-    const video = document.getElementById('chaos-video');
-    const loading = document.getElementById('loading');
-    const playBtn = document.getElementById('togglePlay');
-
-    const sources = {
-      low: '/assets/demo/chaos_low.mp4',
-      med: '/assets/demo/chaos_med.mp4',
-      high: '/assets/demo/chaos_high.mp4'
-    };
-
-    document.querySelectorAll('input[name="chaos"]').forEach(radio => {
-      radio.addEventListener('change', () => {
-        loading.style.display = 'block';
-        video.pause();
-        video.querySelector('source').src = sources[radio.value];
-        video.load();
-        video.oncanplay = () => {
-          loading.style.display = 'none';
-          video.play();
-          playBtn.textContent = 'Pause';
-        };
-      });
-    });
-
-    playBtn.addEventListener('click', () => {
-      if (video.paused) {
-        video.play();
-        playBtn.textContent = 'Pause';
-      } else {
-        video.pause();
-        playBtn.textContent = 'Play';
-      }
-    });
-  </script>
+  <button class="next" onclick="window.location.href='module2.html'">Next</button>
 </body>
 </html>
