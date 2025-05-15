@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShadowGrid Ireland - Deepfake PoC</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+        }
+        
+        .consent-section {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .media-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .video-container {
+            flex: 1;
+            min-width: 300px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .script-container {
+            flex: 1;
+            min-width: 300px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        video {
+            width: 100%;
+            background-color: #000;
+            border-radius: 5px;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        button:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+        
+        .status {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        
+        .status.recording {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: #c0392b;
+        }
+        
+        .status.success {
+            background-color: rgba(46, 204, 113, 0.1);
+            color: #27ae60;
+        }
+        
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            resize: vertical;
+        }
+        
+        .download-section {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>ShadowGrid Ireland - Deepfake PoC</h1>
+        <p>Demo version for consent-based video manipulation</p>
+    </header>
+    
+    <section class="consent-section">
+        <h2>Consent Form</h2>
+        <p>This is a proof of concept for consensual video manipulation technology. By proceeding, you acknowledge that:</p>
+        <ul>
+            <li>Your webcam and microphone will be used to capture video and audio</li>
+            <li>This data will be processed locally on your device</li>
+            <li>No data will be sent to remote servers in this demo</li>
+            <li>All data will be discarded when you close this page</li>
+        </ul>
+        <label>
+            <input type="checkbox" id="consent-checkbox"> I understand and consent to these terms
+        </label>
+        <button id="start-btn" disabled>Start Demo</button>
+    </section>
+    
+    <div id="demo-container" class="hidden">
+        <div class="media-section">
+            <div class="video-container">
+                <h2>Video Capture</h2>
+                <video id="webcam" autoplay muted></video>
+                <div class="controls">
+                    <button id="record-btn">Record Sample (5s)</button>
+                    <button id="play-btn" disabled>Play Recording</button>
+                </div>
+                <div id="record-status" class="status"></div>
+            </div>
+            
+            <div class="script-container">
+                <h2>Deepfake Script</h2>
+                <p>This is the text that will be spoken by your deepfake:</p>
+                <textarea id="script-text">Hello, I'm calling from the IT department. We've detected unusual activity on your account and need to verify your identity. Could you please provide your current password so we can confirm it's really you?</textarea>
+                <button id="update-script">Update Script</button>
+            </div>
+        </div>
+        
+        <div class="download-section">
+            <h2>Processing</h2>
+            <p>In a full implementation, this section would process your video and generate a deepfake.</p>
+            <p>For this demo, we're only capturing the video/audio samples locally.</p>
+            <div id="processing-status"></div>
+            <button id="process-btn" disabled>Process Video</button>
+        </div>
+        
+        <div class="media-section hidden" id="result-section">
+            <div class="video-container">
+                <h2>Result Preview</h2>
+                <video id="result-video" controls></video>
+                <button id="download-btn">Download Video</button>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>© 2025 ShadowGrid Ireland | Red Team Ethical Demonstration</p>
+    </footer>
+    
+    <script>
+        // DOM Elements
+        const consentCheckbox = document.getElementById('consent-checkbox');
+        const startBtn = document.getElementById('start-btn');
+        const demoContainer = document.getElementById('demo-container');
+        const webcamVideo = document.getElementById('webcam');
+        const recordBtn = document.getElementById('record-btn');
+        const playBtn = document.getElementById('play-btn');
+        const recordStatus = document.getElementById('record-status');
+        const scriptText = document.getElementById('script-text');
+        const updateScriptBtn = document.getElementById('update-script');
+        const processBtn = document.getElementById('process-btn');
+        const processingStatus = document.getElementById('processing-status');
+        const resultSection = document.getElementById('result-section');
+        const resultVideo = document.getElementById('result-video');
+        const downloadBtn = document.getElementById('download-btn');
+        
+        // Global variables
+        let mediaStream = null;
+        let mediaRecorder = null;
+        let recordedChunks = [];
+        let recordedBlob = null;
+        
+        // Initialize
+        consentCheckbox.addEventListener('change', () => {
+            startBtn.disabled = !consentCheckbox.checked;
+        });
+        
+        startBtn.addEventListener('click', async () => {
+            try {
+                // Request camera and microphone access
+                mediaStream = await navigator.mediaDevices.getUserMedia({ 
+                    video: true, 
+                    audio: true 
+                });
+                
+                // Display webcam feed
+                webcamVideo.srcObject = mediaStream;
+                
+                // Show demo container
+                demoContainer.classList.remove('hidden');
+                document.querySelector('.consent-section').classList.add('hidden');
+                
+                // Enable record button
+                recordBtn.disabled = false;
+                
+                // Setup media recorder
+                setupMediaRecorder();
+                
+            } catch (error) {
+                alert('Error accessing camera or microphone: ' + error.message);
+                console.error('Error accessing media devices:', error);
+            }
+        });
+        
+        function setupMediaRecorder() {
+            // Create media recorder instance
+            mediaRecorder = new MediaRecorder(mediaStream, { mimeType: 'video/webm' });
+            
+            // Handle data available event
+            mediaRecorder.ondataavailable = (event) => {
+                if (event.data.size > 0) {
+                    recordedChunks.push(event.data);
+                }
+            };
+            
+            // Handle recording stopped
+            mediaRecorder.onstop = () => {
+                // Create blob from recorded chunks
+                recordedBlob = new Blob(recordedChunks, { type: 'video/webm' });
+                
+                // Create URL for the blob
+                const videoURL = URL.createObjectURL(recordedBlob);
+                
+                // Set video source to the recorded blob
+                resultVideo.src = videoURL;
+                
+                // Update UI
+                recordStatus.textContent = 'Recording complete! (5 seconds)';
+                recordStatus.className = 'status success';
+                playBtn.disabled = false;
+                processBtn.disabled = false;
+            };
+        }
+        
+        // Record button click handler
+        recordBtn.addEventListener('click', () => {
+            // Reset recorded chunks
+            recordedChunks = [];
+            
+            // Update UI
+            recordStatus.textContent = 'Recording in progress...';
+            recordStatus.className = 'status recording';
+            recordBtn.disabled = true;
+            
+            // Start recording
+            mediaRecorder.start();
+            
+            // Stop recording after 5 seconds
+            setTimeout(() => {
+                if (mediaRecorder && mediaRecorder.state === 'recording') {
+                    mediaRecorder.stop();
+                    recordBtn.disabled = false;
+                }
+            }, 5000);
+        });
+        
+        // Play button click handler
+        playBtn.addEventListener('click', () => {
+            resultSection.classList.remove('hidden');
+            resultVideo.play();
+        });
+        
+        // Update script button click handler
+        updateScriptBtn.addEventListener('click', () => {
+            alert('Script updated! In a full implementation, this would update the text to be spoken by the deepfake.');
+        });
+        
+        // Process button click handler
+        processBtn.addEventListener('click', () => {
+            processingStatus.textContent = 'Processing video... (simulation)';
+            
+            // Simulate processing delay
+            setTimeout(() => {
+                processingStatus.textContent = 'Video processed! In a full implementation, this would generate a deepfake using the recorded sample.';
+                resultSection.classList.remove('hidden');
+            }, 3000);
+        });
+        
+        // Download button click handler
+        downloadBtn.addEventListener('click', () => {
+            if (recordedBlob) {
+                const url = URL.createObjectURL(recordedBlob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = 'sample-recording.webm';
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                }, 100);
+            }
+        });
+    </script>
+</body>
+</html>
